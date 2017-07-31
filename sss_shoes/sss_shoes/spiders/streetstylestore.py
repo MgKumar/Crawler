@@ -8,19 +8,21 @@ from scrapy.http.request import Request
 class StreetstylestoreSpider(scrapy.Spider):
     name = 'streetstylestore'
     allowed_domains = ['www.streetstylestore.com']
-    start_urls = [
-                   'http://streetstylestore.com/index.php?id_category=42&controller=category',
-                   'http://streetstylestore.com/index.php?id_category=48&controller=category'
-                  ]
-
+    start_urls = ['http://streetstylestore.com/index.php?id_cms=50&controller=cms']
   
     def parse(self, response):
+       link= response.xpath('//div[@class="new-cat-sub-cat"]/ul/li//a/@href').extract()
+       for l in link:
+           print l
+           yield scrapy.Request(l,callback = self.parse_url,dont_filter=True)
+
+    def parse_url(self, response):
        url = response.xpath('//div[@class="prd"]//div[@class="item-info"]/a[@class="product-name"]/@href').extract()
       # print url
        for link in url:
-           #print link
+           print link
            yield scrapy.Request(link,callback = self.parse_item,dont_filter=True)
-        
+           
     def parse_item(self,response):
           
            item = SssShoesItem()
