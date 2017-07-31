@@ -18,18 +18,15 @@ class StreetstylestoreSpider(scrapy.Spider):
        url = response.xpath('//div[@class="prd"]//div[@class="item-info"]/a[@class="product-name"]/@href').extract()
       # print url
        for link in url:
-           print link
+           #print link
            yield scrapy.Request(link,callback = self.parse_item,dont_filter=True)
         
     def parse_item(self,response):
           
-           h=response.xpath('//div[@class="product_desc"]//p//strong/text()').extract_first()
-           p=response.xpath('//div[@class="price"]/p/span[@id="our_price_display"]/text()').extract_first()
            item = SssShoesItem()
            item['url'] = response.url
            item['product_name'] = response.xpath('//div[@class="product_desc"]//p//strong/text()').extract_first()
            item['product_price'] = response.xpath('//div[@class="price"]/p/span[@id="our_price_display"]/text()').extract_first()
-           print h,p
            yield item
     
 
